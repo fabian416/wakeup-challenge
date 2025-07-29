@@ -1,18 +1,22 @@
-import { useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
-const useInfiniteScroll = (callback: () => void) => {
-  const observer = useRef<IntersectionObserver | null>(null);
+const useInfiniteScroll = (loadMore: () => Promise<{ hasMore: boolean }>) => {
+  const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
-    (node: HTMLElement | null) => {
+    (node: HTMLDivElement | null) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          callback();
+          loadMore().then((response) => {
+            if (!response.hasMore) {
+              if (observer.current) observer.current.disconnect();
+            }
+          });
         }
       });
       if (node) observer.current.observe(node);
     },
-    [callback],
+    [loadMore],
   );
 
   return lastElementRef;
