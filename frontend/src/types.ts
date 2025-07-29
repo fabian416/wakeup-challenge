@@ -2,5 +2,9 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  restaurant: string;
+}
+
+export interface Restaurant {
+  id: string;
+  name: string;
 }
