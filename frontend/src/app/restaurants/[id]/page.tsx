@@ -7,6 +7,7 @@ import useInfiniteScroll from "@/hooks/use-infinite-scroll";
 import { useParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import Link from "next/link";
+import { SuccessModal } from "@/components/success-modal";
 
 export default function RestaurantPage() {
   const params = useParams();
@@ -16,6 +17,8 @@ export default function RestaurantPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   const loadMoreProducts = useCallback(async () => {
     if (loading || !hasMore) return { hasMore: false };
@@ -73,11 +76,18 @@ export default function RestaurantPage() {
     });
 
     if (response.ok) {
-      alert('Order submitted successfully!');
+      setModalMessage('Order submitted successfully!');
+      setShowSuccessModal(true);
       setOrder(new Map()); // Clear the order
     } else {
-      alert('Failed to submit order.');
+      setModalMessage('Failed to submit order.');
+      setShowSuccessModal(true);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    setModalMessage("");
   };
 
   return (
@@ -117,6 +127,7 @@ export default function RestaurantPage() {
       {hasMore && <div ref={lastElementRef} />}
       {loading && <p>Loading...</p>}
       {!hasMore && !loading && <p className="text-center">No more products to load.</p>}
+      <SuccessModal isOpen={showSuccessModal} onClose={handleCloseModal} message={modalMessage} />
     </main>
   );
 }
