@@ -1,25 +1,19 @@
 import { Product, Restaurant } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '');
 
 export const getRestaurants = async (
   page: number,
   limit: number
 ): Promise<{ data: Restaurant[]; hasMore: boolean }> => {
   const response = await fetch(`${API_BASE_URL}/api/restaurants?page=${page}&limit=${limit}`);
-
   if (!response.ok) {
     throw new Error(`Failed to fetch restaurants: ${response.status}`);
   }
-
   const data = await response.json();
-
-  if (!Array.isArray(data.data)) {
-    console.warn("Expected array of restaurants in 'data', got:", data);
-    return { data: [], hasMore: false };
-  }
-
-  return data; 
+  return data;
 };
 
 export const getProducts = async (

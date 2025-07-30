@@ -11,12 +11,12 @@ export class RestaurantsService {
     for (let i = 0; i < 100; i++) {
       const products: Product[] = [];
 
-      const usedProductIds = new Set<string>(); // ← para evitar IDs duplicados
+      const usedProductIds = new Set<string>(); // Tracker for unique product IDs
 
-      for (let j = 0; j < Math.floor(Math.random() * 100) + 20; j++) {
+      for (let j = 0; j < Math.floor(Math.random() * 51) + 100; j++) {
         let id: string;
 
-        // Genera hasta obtener un ID único dentro del restaurante
+        // Generate a unique product ID
         do {
           id = faker.string.uuid();
         } while (usedProductIds.has(id));
