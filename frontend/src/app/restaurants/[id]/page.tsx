@@ -4,10 +4,14 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import { getProducts } from "@/services/api";
 import useInfiniteScroll from "@/hooks/use-infinite-scroll";
+import { useParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import Link from "next/link";
 
-export default function RestaurantPage({ params }: { params: { id: string } }) {
+
+export default function RestaurantPage() {
+  const params = useParams();
+  const id = params.id as string;
   const [products, setProducts] = useState<Product[]>([]);
   const [order, setOrder] = useState<Map<string, { product: Product; quantity: number }>>(new Map());
   const [page, setPage] = useState(1);
@@ -20,8 +24,12 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
     setLoading(true);
 
     try {
-      const { data: newProducts, hasMore: newHasMore } = await getProducts(params.id, page, 10);
-      setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+      const { data: newProducts, hasMore: newHasMore } = await getProducts(id, page, 10);
+      setProducts((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id));
+        const uniqueNew = newProducts.filter((p) => !existingIds.has(p.id));
+        return [...prev, ...uniqueNew];
+      });
       setPage((prevPage) => prevPage + 1);
       setHasMore(newHasMore);
       return { hasMore: newHasMore };
