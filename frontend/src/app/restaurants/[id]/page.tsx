@@ -43,10 +43,6 @@ export default function RestaurantPage() {
     }
   }, [hasMore, id, loading, page]);
 
-  useEffect(() => {
-    loadMoreProducts();
-  }, [loadMoreProducts]);
-
   const lastElementRef = useInfiniteScroll(loadMoreProducts);
 
   const handleAddToOrder = (product: Product) => {

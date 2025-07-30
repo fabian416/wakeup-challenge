@@ -41,10 +41,6 @@ export const RestaurantList = () => {
     }
   }, [loading, hasMore]);
 
-  useEffect(() => {
-    loadMoreRestaurants();
-  }, [loadMoreRestaurants]);
-
   const lastElementRef = useInfiniteScroll(loadMoreRestaurants);
 
   return (
