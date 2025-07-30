@@ -1,6 +1,6 @@
 # WakeUp Technical Challenge Solution
 
-This repository contains the solution to the WakeUp Technical Challenge, which involves building a restaurant management platform with a Node.js-based API and a React-based frontend.
+This repository contains the WakeUp Technical Challenge, which involves building a restaurant management platform with a Node.js-based API and a React-based frontend.
 
 ## Project Overview
 
@@ -99,8 +99,6 @@ npm test
 ## Deployment
 
 This project is structured for easy deployment. The backend can be deployed to any Node.js hosting environment (e.g., Render, Heroku, AWS EC2) by building the project (`pnpm run build`) and then running `pnpm run start:prod`. The frontend, being a Next.js application, can be easily deployed to platforms like Vercel or Netlify.
-
-## Assumptions and Future Improvements
 
 ### Assumptions Made
 
