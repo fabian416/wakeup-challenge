@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { PaginationDto } from '../common/dto/pagination.dto';
 
-@Controller('restaurants')
+@Controller('api/restaurants')
 export class RestaurantsController {
   constructor(private readonly restaurantsService: RestaurantsService) {}
 
