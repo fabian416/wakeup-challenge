@@ -8,9 +8,10 @@ describe('useInfiniteScroll', () => {
 
     const observe = jest.fn();
     const disconnect = jest.fn();
-    const mockIntersectionObserver = jest.fn((callback) => ({
+
+    const mockIntersectionObserver = jest.fn((callback: IntersectionObserverCallback) => ({
       observe,
-      disconnect,
+            disconnect,
       unobserve: jest.fn(),
       root: null,
       rootMargin: '',
@@ -18,13 +19,17 @@ describe('useInfiniteScroll', () => {
       takeRecords: jest.fn(),
     }));
 
-    (global as any).IntersectionObserver = mockIntersectionObserver;
+    Object.defineProperty(window, 'IntersectionObserver', {
+      writable: true,
+      configurable: true,
+      value: mockIntersectionObserver,
+    });
 
     const lastElement = document.createElement('div');
     result.current(lastElement);
 
-    const [callback] = mockIntersectionObserver.mock.calls[0];
-    callback([{ isIntersecting: true }]);
+    // Simulate intersection
+    mockIntersectionObserver.mock.calls[0][0]([{ isIntersecting: true }] as IntersectionObserverEntry[], {} as IntersectionObserver);
 
     expect(loadMore).toHaveBeenCalled();
   });

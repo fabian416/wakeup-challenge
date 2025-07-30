@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Product } from "@/types";
 import { getProducts } from "@/services/api";
 import useInfiniteScroll from "@/hooks/use-infinite-scroll";
 import { useParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import Link from "next/link";
-
 
 export default function RestaurantPage() {
   const params = useParams();
@@ -18,11 +17,11 @@ export default function RestaurantPage() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadMoreProducts = async () => {
+  const loadMoreProducts = useCallback(async () => {
     if (loading || !hasMore) return { hasMore: false };
-
+  
     setLoading(true);
-
+  
     try {
       const { data: newProducts, hasMore: newHasMore } = await getProducts(id, page, 10);
       setProducts((prev) => {
@@ -39,11 +38,11 @@ export default function RestaurantPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [hasMore, id, loading, page]);
 
   useEffect(() => {
     loadMoreProducts();
-  }, []);
+  }, [loadMoreProducts]);
 
   const lastElementRef = useInfiniteScroll(loadMoreProducts);
 

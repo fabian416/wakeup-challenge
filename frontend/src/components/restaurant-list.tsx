@@ -1,5 +1,6 @@
-"use client"
-import { useEffect, useRef, useState } from "react";
+"use client";
+
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Restaurant } from "@/types";
 import { getRestaurants } from "@/services/api";
 import useInfiniteScroll from "@/hooks/use-infinite-scroll";
@@ -10,38 +11,39 @@ export const RestaurantList = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const pageRef = useRef(1); 
+  const pageRef = useRef(1);
 
-  const loadMoreRestaurants = async (): Promise<{ hasMore: boolean }> => {
+  const loadMoreRestaurants = useCallback(async (): Promise<{ hasMore: boolean }> => {
     if (loading || !hasMore) return { hasMore: false };
-  
+
     setLoading(true);
-  
+
     try {
       const { data: newRestaurants, hasMore: newHasMore } = await getRestaurants(pageRef.current, 10);
-  
+
       setRestaurants((prev) => {
         const existingIds = new Set(prev.map((r) => r.id));
         const uniqueNew = newRestaurants.filter((r) => !existingIds.has(r.id));
         return [...prev, ...uniqueNew];
       });
-  
+
       if (newHasMore) {
         pageRef.current += 1;
       }
-  
+
       setHasMore(newHasMore);
-      return { hasMore: newHasMore }; 
+      return { hasMore: newHasMore };
     } catch (err) {
       console.error("Error fetching restaurants:", err);
       return { hasMore: false };
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, hasMore]);
+
   useEffect(() => {
     loadMoreRestaurants();
-  }, []);
+  }, [loadMoreRestaurants]);
 
   const lastElementRef = useInfiniteScroll(loadMoreRestaurants);
 
